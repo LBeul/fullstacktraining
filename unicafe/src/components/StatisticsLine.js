@@ -1,7 +1,10 @@
 import React from "react"
 
 const StatisticsLine = ({ metric, value, isPercent }) => (
-  <p>{`${metric}: ${value}${isPercent ? " %" : ""}`}</p>
+  <tr>
+    <td>{`${metric}:`}</td>
+    <td>{`${value}${isPercent ? " %" : ""}`}</td>
+  </tr>
 )
 
 export default StatisticsLine
