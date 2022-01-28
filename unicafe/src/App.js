@@ -63,6 +63,9 @@ const FeedbackButtons = ({ onGoodClick, onNeutralClick, onBadClick }) => (
 )
 
 const Statistics = ({ goodClicks, neutralClicks, badClicks, allClicks }) => {
+  if (allClicks == 0) {
+    return <p>No ratings given so far</p>
+  }
   const positive = allClicks != 0 ? goodClicks / allClicks : 0
   const average = allClicks != 0 ? (goodClicks - badClicks) / allClicks : 0
 
