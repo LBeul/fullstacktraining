@@ -1,25 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react"
 
-function App() {
+const App = () => {
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  const onGoodClick = event => {
+    event.preventDefault()
+    setGood(good + 1)
+  }
+
+  const onNeutralClick = event => {
+    event.preventDefault()
+    setNeutral(neutral + 1)
+  }
+
+  const onBadClick = event => {
+    event.preventDefault()
+    setBad(bad + 1)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <FeedbackButtons
+        onGoodClick={onGoodClick}
+        onNeutralClick={onNeutralClick}
+        onBadClick={onBadClick}
+      />
+      <Statistics goodClicks={good} neutralClicks={neutral} badClicks={bad} />
+    </>
+  )
 }
 
-export default App;
+const FeedbackButtons = ({ onGoodClick, onNeutralClick, onBadClick }) => (
+  <>
+    <h1>Give Feedback</h1>
+    <button type="submit" onClick={onGoodClick}>
+      Good
+    </button>
+    <button type="submit" onClick={onNeutralClick}>
+      Neutral
+    </button>
+    <button type="submit" onClick={onBadClick}>
+      Bad
+    </button>
+  </>
+)
+
+const Statistics = ({ goodClicks, neutralClicks, badClicks }) => (
+  <>
+    <p>good: {goodClicks}</p>
+    <p>neutral: {neutralClicks}</p>
+    <p>bad: {badClicks}</p>
+  </>
+)
+
+export default App
