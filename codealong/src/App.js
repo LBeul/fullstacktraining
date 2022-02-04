@@ -1,45 +1,49 @@
 import React, { useState } from "react"
 
-const History = ({ clickSequence }) => {
-  if (clickSequence.length === 0) {
-    return <div>Click the Buttons to use the app</div>
-  }
-  return <div>Button press history: {clickSequence.join(" ")}</div>
-}
-
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>{text}</button>
+const Button = ({ label, onClick }) => (
+  <button onClick={onClick}>{label}</button>
 )
 
 const App = () => {
-  const [clicks, setClicks] = useState({
-    left: 0,
-    right: 0,
-  })
-  const [clickSequence, setClickSequence] = useState([])
+  const anecdotes = [
+    "If it hurts, do it more often",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients",
+  ]
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0])
 
-  const handleLeftClick = () => {
-    setClickSequence(clickSequence.concat("L"))
-    setClicks({ ...clicks, left: clicks.left + 1 })
+  const [selected, setSelected] = useState(0)
+  const [rankedHighest, setRankedHighest] = useState(0)
+
+  const getRandomAnecdote = () => {
+    setSelected(Math.floor(Math.random() * anecdotes.length))
   }
-  const handleRightClick = () => {
-    setClickSequence(clickSequence.concat("R"))
-    setClicks({ ...clicks, right: clicks.right + 1 })
-  }
-  const handleMiddleClick = () => {
-    setClickSequence(clickSequence.concat("B"))
-    setClicks({ left: clicks.left + 1, right: clicks.right + 1 })
+
+  const voteUp = () => {
+    const votesCopy = [...votes]
+    votesCopy[selected]++
+    setVotes(votesCopy)
+    const maxValue = Math.max(...votesCopy)
+    setRankedHighest(votesCopy.indexOf(maxValue))
   }
 
   return (
-    <div>
-      {clicks.left}
-      <Button handleClick={handleLeftClick} text="left" />
-      <Button handleClick={handleMiddleClick} text="both" />
-      <Button handleClick={handleRightClick} text="right" />
-      {clicks.right}
-      <History clickSequence={clickSequence} />
-    </div>
+    <>
+      <div>
+        <h2>Anecdote of the day</h2>
+        {anecdotes[selected]} <strong>{votes[selected]}</strong>
+      </div>
+      <Button label="Get Random Anecdote!" onClick={getRandomAnecdote} />
+      <Button label="Vote up" onClick={voteUp} />
+      <div>
+        <h2>Anecdote with highest vote</h2>
+        {anecdotes[rankedHighest]} <strong>{votes[rankedHighest]}</strong>
+      </div>
+    </>
   )
 }
 
