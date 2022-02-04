@@ -81,7 +81,7 @@ It's **not possible** to pass function calls as event handler properties:
 Sometimes, you may need to pass a property to a function executed by an event handler. If the function is defined inside of the `onClick` property, this should be an easy task - just integrate it. However, a lot of times you keep the handler functions separated and pass them as references, like `onClick={clickHandler}`. As function calls inside of event handlers are illegal, you have to solve that problem by calling a function that returns a function. Sounds complicated, heh? Be sure, it's easier than it sounds:
 
 ```jsx
-const greet = (name) => {
+const greet = name => {
   const hello = () => {
     console.log(`Hello, ${name}!`)
   }
@@ -103,7 +103,7 @@ Another thing concerning event handlers is the so-called _default behaviour_ tri
 
 ```jsx
 const InputThingy = () => {
-  const addItem = (event) => {
+  const addItem = event => {
     event.preventDefault()
     console.log("button clicked", event.target)
   }
@@ -181,3 +181,18 @@ const App = () => {
   )
 }
 ```
+
+## Rendering Collections
+
+When rendering collections - e.g. by calling `.map()` on an array of content, React will inform you (via agressive logging) that each items needs to have a specific key property. Those key strings' purpose is to give each rendered element a stable identity - therefore React's virtual DOM is able to save lots of time performing rendering operations.
+
+```jsx
+const NumberList = ({ numbers }) => {
+  const listItems = numbers.map(number => (
+    <ListItem value={number} key={number.toString()} />
+  ))
+  return <ul>{listItems}</ul>
+}
+```
+
+When working with arrays, one my be tempted to simply plug in an elements array-index as key. This is a very bad idea as it may crash the whole app if the original array ordering changes. So just never do it.
