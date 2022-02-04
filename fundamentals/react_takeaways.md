@@ -153,7 +153,7 @@ const handleLeftClick = () => {
 
 ## Hooks
 
-Hook-defining functions(like `useEffect` or `useState`) have to be called from the body of a functional react component. Calling them from inside of loops or conditionals is forbidden and will crash your app.
+Hook-defining functions(like `useEffect` or `useState`) have to be **called from the body of a functional react component**. Calling them from inside of loops or conditionals is forbidden and will crash your app.
 
 ```jsx
 const App = () => {
