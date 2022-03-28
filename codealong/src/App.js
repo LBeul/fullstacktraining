@@ -1,49 +1,55 @@
 import React, { useState } from "react"
+import Note from "./components/Note"
 
-const Button = ({ label, onClick }) => (
-  <button onClick={onClick}>{label}</button>
-)
+const App = props => {
+  const [notes, setNotes] = useState(props.notes)
+  const [newNote, setNewNote] = useState("")
+  const [showAll, setShowAll] = useState(true)
 
-const App = () => {
-  const anecdotes = [
-    "If it hurts, do it more often",
-    "Adding manpower to a late software project makes it later!",
-    "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-    "Premature optimization is the root of all evil.",
-    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
-    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients",
-  ]
-  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0])
+  const notesToShow = showAll
+    ? notes
+    : notes.filter(note => note.important === true)
 
-  const [selected, setSelected] = useState(0)
-  const [rankedHighest, setRankedHighest] = useState(0)
+  const addNote = event => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random() > 0.5,
+      id: notes.length + 1,
+    }
 
-  const getRandomAnecdote = () => {
-    setSelected(Math.floor(Math.random() * anecdotes.length))
+    setNotes(notes.concat(noteObject))
+    setNewNote("")
   }
 
-  const voteUp = () => {
-    const votesCopy = [...votes]
-    votesCopy[selected]++
-    setVotes(votesCopy)
-    const maxValue = Math.max(...votesCopy)
-    setRankedHighest(votesCopy.indexOf(maxValue))
+  const handleNoteChange = event => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
   }
 
   return (
-    <>
+    <div>
+      <h1>Notes</h1>
       <div>
-        <h2>Anecdote of the day</h2>
-        {anecdotes[selected]} <strong>{votes[selected]}</strong>
+        <button
+          onClick={() => {
+            setShowAll(!showAll)
+          }}
+        >
+          show {showAll ? "important" : "all"}
+        </button>
       </div>
-      <Button label="Get Random Anecdote!" onClick={getRandomAnecdote} />
-      <Button label="Vote up" onClick={voteUp} />
-      <div>
-        <h2>Anecdote with highest vote</h2>
-        {anecdotes[rankedHighest]} <strong>{votes[rankedHighest]}</strong>
-      </div>
-    </>
+      <ul>
+        {notesToShow.map(note => (
+          <Note key={note.id} note={note} />
+        ))}
+      </ul>
+      <form onSubmit={addNote}>
+        <input onChange={handleNoteChange} value={newNote} />
+        <button type="submit">save</button>
+      </form>
+    </div>
   )
 }
 
