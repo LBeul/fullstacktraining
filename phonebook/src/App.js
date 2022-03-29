@@ -12,23 +12,23 @@ const App = ({ entries }) => {
   const filteredList =
     filter === ""
       ? persons
-      : persons.filter(person =>
+      : persons.filter((person) =>
           person.name.toLowerCase().includes(filter.toLowerCase())
         )
 
-  const changeName = event => {
+  const changeName = (event) => {
     setNewName(event.target.value)
   }
-  const changeNumber = event => {
+  const changeNumber = (event) => {
     setNewNumber(event.target.value)
   }
-  const changeFilter = event => {
+  const changeFilter = (event) => {
     setFilter(event.target.value)
   }
 
-  const addEntry = event => {
+  const addEntry = (event) => {
     event.preventDefault()
-    if (persons.filter(person => person.name === newName).length > 0) {
+    if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to the phonebook!`)
     } else {
       setPersons(persons.concat({ name: newName, number: newNumber }))
