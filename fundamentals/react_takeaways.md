@@ -81,7 +81,7 @@ It's **not possible** to pass function calls as event handler properties:
 Sometimes, you may need to pass a property to a function executed by an event handler. If the function is defined inside of the `onClick` property, this should be an easy task - just integrate it. However, a lot of times you keep the handler functions separated and pass them as references, like `onClick={clickHandler}`. As function calls inside of event handlers are illegal, you have to solve that problem by calling a function that returns a function. Sounds complicated, heh? Be sure, it's easier than it sounds:
 
 ```jsx
-const greet = name => {
+const greet = (name) => {
   const hello = () => {
     console.log(`Hello, ${name}!`)
   }
@@ -103,7 +103,7 @@ Another thing concerning event handlers is the so-called _default behaviour_ tri
 
 ```jsx
 const InputThingy = () => {
-  const addItem = event => {
+  const addItem = (event) => {
     event.preventDefault()
     console.log("button clicked", event.target)
   }
@@ -116,7 +116,53 @@ const InputThingy = () => {
 }
 ```
 
-## Mutating state
+## Rendering Collections
+
+When rendering collections - e.g. by calling `.map()` on an array of content, React will inform you (via agressive logging) that each items needs to have a specific key property. Those key strings' purpose is to give each rendered element a stable identity - therefore React's virtual DOM is able to save lots of time performing rendering operations.
+
+```jsx
+const NumberList = ({ numbers }) => {
+  const listItems = numbers.map((number) => (
+    <ListItem value={number} key={number.toString()} />
+  ))
+  return <ul>{listItems}</ul>
+}
+```
+
+When working with arrays, one my be tempted to simply plug in an elements array-index as key. This is a very bad idea as it may crash the whole app if the original array ordering changes. So just never do it.
+
+## Hooks
+
+Hook-defining functions(like `useEffect` or `useState`) have to be **called from the body of a functional react component**. Calling them from inside of loops or conditionals is forbidden and will crash your app.
+
+```jsx
+const App = () => {
+  // Perfectly fine
+  const [age, setAge] = useState(0)
+  const [name, setName] = useState('Juha Tauriainen')
+
+  if ( age > 10 ) {
+    // FORBIDDEN
+    const [foobar, setFoobar] = useState(null)
+  }
+
+  for ( let i = 0; i < age; i++ ) {
+    // FORBIDDEN
+    const [rightWay, setRightWay] = useState(false)
+  }
+
+  const notGood = () => {
+    // FORBIDDEN
+    const [x, setX] = useState(-1000)
+  }
+
+  return (
+    //...
+  )
+}
+```
+
+### Mutating state using the `useState` hook
 
 A component's state should never be altered directly - that's what the setState hook was inventend for. Mutating the state directly can result in unexpected behaviour and side effects.
 
@@ -151,48 +197,9 @@ const handleLeftClick = () => {
 }
 ```
 
-## Hooks
+### Trigger side effects using the `useEffect` hook
 
-Hook-defining functions(like `useEffect` or `useState`) have to be **called from the body of a functional react component**. Calling them from inside of loops or conditionals is forbidden and will crash your app.
+Functional components are usually cosidered _pure_ - i.e. not producing side effects.
+However, some side effects (e.g. newtork requests) are crucial for opur application to work frictionless. This is why the `useEffect` hook was introduced. It enbales ypu tp perform side effects in functional components.
 
-```jsx
-const App = () => {
-  // Perfectly fine
-  const [age, setAge] = useState(0)
-  const [name, setName] = useState('Juha Tauriainen')
-
-  if ( age > 10 ) {
-    // FORBIDDEN
-    const [foobar, setFoobar] = useState(null)
-  }
-
-  for ( let i = 0; i < age; i++ ) {
-    // FORBIDDEN
-    const [rightWay, setRightWay] = useState(false)
-  }
-
-  const notGood = () => {
-    // FORBIDDEN
-    const [x, setX] = useState(-1000)
-  }
-
-  return (
-    //...
-  )
-}
-```
-
-## Rendering Collections
-
-When rendering collections - e.g. by calling `.map()` on an array of content, React will inform you (via agressive logging) that each items needs to have a specific key property. Those key strings' purpose is to give each rendered element a stable identity - therefore React's virtual DOM is able to save lots of time performing rendering operations.
-
-```jsx
-const NumberList = ({ numbers }) => {
-  const listItems = numbers.map(number => (
-    <ListItem value={number} key={number.toString()} />
-  ))
-  return <ul>{listItems}</ul>
-}
-```
-
-When working with arrays, one my be tempted to simply plug in an elements array-index as key. This is a very bad idea as it may crash the whole app if the original array ordering changes. So just never do it.
+The `useEffect` function is automatically called after a component _rendered_ - i.e. after mounting or updating the component where it's located.
