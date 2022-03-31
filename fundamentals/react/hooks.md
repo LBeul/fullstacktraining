@@ -72,3 +72,25 @@ Functional components are usually cosidered _pure_ - i.e. not producing side eff
 However, some side effects (e.g. newtork requests) are crucial for opur application to work frictionless. This is why the `useEffect` hook was introduced. It enbales ypu tp perform side effects in functional components.
 
 The `useEffect` function is automatically called after a component _rendered_ - i.e. after mounting or updating the component where it's located.
+
+```jsx
+import React, { useState, useEffect } from "react"
+
+const SomeComponent = () => {
+  const [data, setData] = useState([])
+
+  const fetchData = () =>
+    fetch("http://localhost:5500/db.json")
+      .then((response) => response.json())
+      .then((data) => setNotes(data.whatever))
+
+  useEffect(fetchNotes, []) // call when [] changes
+
+  return(/* returns all notes as list */)
+}
+```
+
+If you looked closely, you may have realized that our `useEffect()` hook actually received _two params_: a function expression and an (empty) _array_.
+This array is the so called **dependency list**. It contains all elements thath are relevant to the side-effect - i.e. if some element in that array changes, `useState()` is called.
+
+If you leave this empty, the function gets triggered on _every_ re-render - which may eventually lead to an endless loop. Therefore, if it needs to be called only once, `[]` is passed.
