@@ -1,10 +1,17 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Note from "./components/Note"
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes)
+const App = () => {
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState("")
   const [showAll, setShowAll] = useState(true)
+
+  const fetchNotes = () =>
+    fetch("http://localhost:5500/db.json")
+      .then((response) => response.json())
+      .then((data) => setNotes(data.notes))
+
+  useEffect(fetchNotes, [])
 
   const notesToShow = showAll
     ? notes
