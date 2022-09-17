@@ -17,10 +17,4 @@ const update = (id, newObject) => {
   return request.then((response) => response.data);
 };
 
-const accessObject = {
-  getAll: getAll,
-  create: create,
-  update: update,
-};
-
-export default accessObject;
+export default { getAll, create, update };
