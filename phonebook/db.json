@@ -1,0 +1,39 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "callCount": 17,
+      "id": 1
+    },
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523",
+      "callCount": 13,
+      "id": 2
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "callCount": 2,
+      "id": 3
+    },
+    {
+      "name": "Mary Poppendieck",
+      "number": "39-23-6423122",
+      "callCount": 0,
+      "id": 4
+    },
+    {
+      "name": "ya mi",
+      "number": "1152527",
+      "callCount": 2,
+      "id": 5
+    },
+    {
+      "name": "sada",
+      "number": "19384845",
+      "id": 6
+    }
+  ]
+}
