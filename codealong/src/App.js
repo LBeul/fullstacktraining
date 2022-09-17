@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from "react"
-import Note from "./components/Note"
+import React, { useState, useEffect } from "react";
+import Note from "./components/Note";
 
 const App = () => {
-  const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState("")
-  const [showAll, setShowAll] = useState(true)
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState("");
+  const [showAll, setShowAll] = useState(true);
 
   const fetchNotes = () =>
-    fetch("http://localhost:5500/db.json")
+    fetch("http://localhost:3001/db")
       .then((response) => response.json())
-      .then((data) => setNotes(data.notes))
+      .then((data) => setNotes(data.notes));
 
-  useEffect(fetchNotes, [])
+  useEffect(fetchNotes, []);
 
   const notesToShow = showAll
     ? notes
-    : notes.filter((note) => note.important === true)
+    : notes.filter((note) => note.important === true);
 
   const addNote = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const noteObject = {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() > 0.5,
       id: notes.length + 1,
-    }
+    };
 
-    setNotes(notes.concat(noteObject))
-    setNewNote("")
-  }
+    setNotes(notes.concat(noteObject));
+    setNewNote("");
+  };
 
   const handleNoteChange = (event) => {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
-  }
+    console.log(event.target.value);
+    setNewNote(event.target.value);
+  };
 
   return (
     <div>
@@ -41,7 +41,7 @@ const App = () => {
       <div>
         <button
           onClick={() => {
-            setShowAll(!showAll)
+            setShowAll(!showAll);
           }}
         >
           show {showAll ? "important" : "all"}
@@ -57,7 +57,7 @@ const App = () => {
         <button type="submit">save</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

@@ -42,34 +42,34 @@ However, this leads to special tretaments when dealing with a complicated state 
 const [clicks, setClicks] = useState({
   left: 0,
   right: 0,
-})
+});
 
 // Direct mutation --> FORBIDDEN
 const handleLeftClick = () => {
-  clicks.left++
-  setClicks(clicks)
-}
+  clicks.left++;
+  setClicks(clicks);
+};
 
 // Unnecessarily long & hard-to-read state mutation
 const handleRightClick = () => {
   const newClicks = {
     left: clicks.left,
     right: clicks.right + 1,
-  }
-  setClicks(newClicks)
-}
+  };
+  setClicks(newClicks);
+};
 
 // State mutation made easy using the spread operator
 const handleLeftClick = () => {
-  setClicks({ ...clicks, left: clicks.left + 1 })
+  setClicks({ ...clicks, left: clicks.left + 1 });
   // Copies the whole 'clicks' objects and changes the 'left' prop
-}
+};
 ```
 
 ### Trigger side effects with `useEffect`
 
-Functional components are usually cosidered _pure_ - i.e. not producing side effects.
-However, some side effects (e.g. newtork requests) are crucial for opur application to work frictionless. This is why the `useEffect` hook was introduced. It enbales ypu tp perform side effects in functional components.
+Functional components are usually considered _pure_ - i.e. not producing side effects.
+However, some side effects (e.g. network requests) are crucial for our application to work frictionless. This is why the `useEffect` hook was introduced. It enbales you to perform side effects within functional components.
 
 The `useEffect` function is automatically called after a component _rendered_ - i.e. after mounting or updating the component where it's located.
 
@@ -79,7 +79,7 @@ import React, { useState, useEffect } from "react"
 const SomeComponent = () => {
   const [data, setData] = useState([])
 
-  const fetchData = () =>
+  const fetchData = (url) =>
     fetch("http://localhost:5500/db.json")
       .then((response) => response.json())
       .then((data) => setNotes(data.whatever))
@@ -91,6 +91,7 @@ const SomeComponent = () => {
 ```
 
 If you looked closely, you may have realized that our `useEffect()` hook actually received _two params_: a function expression and an (empty) _array_.
-This array is the so called **dependency list**. It contains all elements thath are relevant to the side-effect - i.e. if some element in that array changes, `useState()` is called.
+This array is the so called **dependency list**. It contains all elements that are relevant to the side-effect - i.e. `useState()` is always called if any element referenced in that array changes.
 
-If you leave this empty, the function gets triggered on _every_ re-render - which may eventually lead to an endless loop. Therefore, if it needs to be called only once, `[]` is passed.
+If you do not provide any dependency array, the function gets triggered on _every_ re-render - which may eventually lead to an endless loop.
+Therefore, if it needs to be called only once, `[]` is passed.

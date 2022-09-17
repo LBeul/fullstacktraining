@@ -25,10 +25,10 @@ const App = () => {
 }
 ```
 
-If you want to avoid using `div`s as wrapper elements, you can go with the _"diamond"_:
+If you want to avoid using `div`s as wrapper elements, you can go with the _diamond_ or _fragment_:
 
 ```jsx
-// < > wraps other jsx elements without
+// <></> wraps other jsx elements without
 // destroying your site's semantics
 const Content = () => {
   return (
@@ -36,8 +36,8 @@ const Content = () => {
       <p>bla bla</p>
       <p>42 42 42</p>
     </>
-  )
-}
+  );
+};
 ```
 
 ## Render Collections using `map()`
@@ -48,9 +48,9 @@ When rendering collections - e.g. by calling `.map()` on an array of content, Re
 const NumberList = ({ numbers }) => {
   const listItems = numbers.map((number) => (
     <ListItem value={number} key={number.toString()} />
-  ))
-  return <ul>{listItems}</ul>
-}
+  ));
+  return <ul>{listItems}</ul>;
+};
 ```
 
 When working with arrays, one my be tempted to simply plug in an elements array-index as key. This is a very bad idea as it may crash the whole app if the original array ordering changes. So just never do it.
