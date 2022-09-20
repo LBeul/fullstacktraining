@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ credentials: true }));
+app.use(cors());
 app.use(
   morgan(
     ':method :url :status :res[content-length] - :response-time ms :content'
@@ -95,6 +95,22 @@ app.post('/api/persons', (request, response) => {
   };
   persons = persons.concat(person);
   response.status(201).json(person);
+});
+
+app.put('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id);
+  const body = request.body;
+  const existingPerson = persons.find((p) => p.id === id);
+  if (existingPerson) {
+    const updatedPerson = {
+      ...existingPerson,
+      number: body.number,
+    };
+    persons = persons.filter((p) => p.id !== id).concat(updatedPerson);
+    response.status(204).json(updatedPerson);
+  } else {
+    return response.status(404).end();
+  }
 });
 
 const PORT = 3001;
