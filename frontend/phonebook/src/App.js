@@ -37,17 +37,47 @@ const App = () => {
 
   const addEntry = (event) => {
     event.preventDefault();
-    const newPerson = { name: newName, phoneNumber: newNumber };
-    personService
-      .create(newPerson)
-      .then(() => setPersons(persons.concat(newPerson)));
-    showNotification(`${newName} successfully added!`, false);
+    if (persons.some((person) => person.name === newName)) {
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook! Do you want to replace his number?`
+        )
+      ) {
+        const original = persons.find((p) => p.name === newName);
+        const update = { ...original, phoneNumber: newNumber };
+        personService
+          .update(original.id, update)
+          .then(
+            setPersons(persons.filter((p) => p.name !== newName).concat(update))
+          );
+      }
+    } else {
+      const newPerson = { name: newName, phoneNumber: newNumber };
+      personService
+        .create(newPerson)
+        .then(() => setPersons(persons.concat(newPerson)));
+      showNotification(`${newName} successfully added!`, false);
+    }
     setNewName('');
     setNewNumber('');
   };
 
-  const deleteEntry = () => {
-    console.log('delete clicked');
+  const deleteEntry = (id) => {
+    const entry = persons.find((p) => p.id === id);
+    if (window.confirm(`You sure to delete ${entry.name}?`)) {
+      personService
+        .deleteEntry(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+        })
+        .catch((error) => {
+          showNotification(
+            `The entry ${entry.name} was already deleted from server`,
+            true
+          );
+          fetchEntries();
+        });
+    }
   };
 
   const showNotification = (message, isError) => {
