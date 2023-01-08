@@ -59,7 +59,6 @@ app.post('/api/persons', (request, response, next) => {
 
 // Edit a person by id
 app.put('/api/persons/:id', (request, response, next) => {
-  const id = request.params.id;
   const body = request.body;
 
   const person = {
