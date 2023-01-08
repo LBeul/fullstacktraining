@@ -13,7 +13,10 @@ const App = () => {
   const [notification, setNotifaction] = useState([null, false]);
 
   const fetchEntries = () => {
-    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+    personService
+      .getAll()
+      .then((initialPersons) => setPersons(initialPersons))
+      .catch((error) => showNotification('Cannot reach server.', true));
   };
 
   useEffect(fetchEntries, []);
@@ -47,16 +50,23 @@ const App = () => {
         const update = { ...original, phoneNumber: newNumber };
         personService
           .update(original.id, update)
-          .then(
-            setPersons(persons.filter((p) => p.name !== newName).concat(update))
-          );
+          .then(() => {
+            showNotification(`${newName} successfully edited!`, false);
+            setPersons(
+              persons.filter((p) => p.name !== newName).concat(update)
+            );
+          })
+          .catch((error) => showNotification(error.response.data.error, true));
       }
     } else {
       const newPerson = { name: newName, phoneNumber: newNumber };
       personService
         .create(newPerson)
-        .then(() => setPersons(persons.concat(newPerson)));
-      showNotification(`${newName} successfully added!`, false);
+        .then(() => {
+          setPersons(persons.concat(newPerson));
+          showNotification(`${newName} successfully added!`, false);
+        })
+        .catch((error) => showNotification(error.response.data.error, true));
     }
     setNewName('');
     setNewNumber('');
