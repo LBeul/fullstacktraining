@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import Persons from "./components/Persons";
-import Filter from "./components/Filter";
-import PersonForm from "./components/PersonForm";
-import Notification from "./components/Notification";
-import personService from "./services/persons";
+import React, { useEffect, useState } from 'react';
+import Persons from './components/Persons';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Notification from './components/Notification';
+import personService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState("");
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
   const [notification, setNotifaction] = useState([null, false]);
 
   const fetchEntries = () => {
@@ -19,7 +19,7 @@ const App = () => {
   useEffect(fetchEntries, []);
 
   const filteredList =
-    filter === ""
+    filter === ''
       ? persons
       : persons.filter((person) =>
           person.name.toLowerCase().includes(filter.toLowerCase())
@@ -37,32 +37,17 @@ const App = () => {
 
   const addEntry = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      if (
-        window.confirm(
-          `${newName} is already added to the phonebook! Do you want to replace his number?`
-        )
-      ) {
-        const oldEntry = persons.find((p) => p.name === newName);
-        const newEntry = { ...oldEntry, number: newNumber };
-        personService
-          .update(oldEntry.id, newEntry)
-          .then(
-            setPersons(
-              persons.filter((p) => p.name !== newName).concat(newEntry)
-            )
-          );
-      }
-    } else {
-      const newID = persons[persons.length - 1].id + 1;
-      const newPerson = { name: newName, number: newNumber, id: newID };
-      personService.create(newPerson).then(() => {
-        setPersons(persons.concat(newPerson));
-      });
-    }
+    const newPerson = { name: newName, phoneNumber: newNumber };
+    personService
+      .create(newPerson)
+      .then(() => setPersons(persons.concat(newPerson)));
     showNotification(`${newName} successfully added!`, false);
-    setNewName("");
-    setNewNumber("");
+    setNewName('');
+    setNewNumber('');
+  };
+
+  const deleteEntry = () => {
+    console.log('delete clicked');
   };
 
   const showNotification = (message, isError) => {
@@ -70,24 +55,6 @@ const App = () => {
     setTimeout(() => {
       setNotifaction([null, false]);
     }, 5000);
-  };
-
-  const deleteEntry = (id) => {
-    const entry = persons.find((p) => p.id === id);
-    if (window.confirm(`You sure to delete ${entry.name}?`)) {
-      personService
-        .deleteEntry(id)
-        .then(() => {
-          setPersons(persons.filter((p) => p.id !== id));
-        })
-        .catch((error) => {
-          showNotification(
-            `The entry ${entry.name} was already deleted from server`,
-            true
-          );
-          fetchEntries();
-        });
-    }
   };
 
   return (

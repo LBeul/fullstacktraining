@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const Entry = ({ person, onDelete }) => {
-  const { name, number, id } = person;
+  const { name, phoneNumber, id } = person;
   return (
     <>
       <p>
-        <strong>{name}</strong>: {number}{" "}
+        <strong>{name}</strong>: {phoneNumber}{' '}
         <button onClick={() => onDelete(id)}>🗑</button>
       </p>
     </>
