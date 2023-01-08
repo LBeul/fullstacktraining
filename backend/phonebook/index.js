@@ -1,8 +1,11 @@
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
 
+// Initiate Express App
 const app = express();
+
+// Enable json, cors, morgan
 app.use(express.json());
 app.use(cors());
 app.use(
@@ -11,6 +14,7 @@ app.use(
   )
 );
 
+// Rudimentary database
 let persons = [
   {
     name: 'Dan Abramov',
@@ -34,16 +38,19 @@ let persons = [
   },
 ];
 
+// Log request body if it's a POST request
 morgan.token('content', function (req, res) {
   return req.method === 'POST' ? JSON.stringify(req.body) : '';
 });
 
+// Get highest ID in collection
 const getMaxID = (collection) => {
   return collection.length > 0
     ? Math.max(...collection.map((item) => item.id)) + 1
     : 0;
 };
 
+// Return api status info as HTML
 app.get('/info', (request, response) => {
   const timeStamp = new Date(Date.now());
   response.send(
@@ -53,14 +60,12 @@ app.get('/info', (request, response) => {
   );
 });
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello Jupiter!</h1>');
-});
-
+// Get all persons
 app.get('/api/persons', (request, response) => {
   response.json(persons);
 });
 
+// Get specific person by id
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
   const person = persons.find((p) => p.id === id);
@@ -71,24 +76,29 @@ app.get('/api/persons/:id', (request, response) => {
   }
 });
 
+// Delete person with id
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
   persons = persons.filter((p) => p.id !== id);
   response.status(204).end();
 });
 
+// add new person to db
 app.post('/api/persons', (request, response) => {
   const body = request.body;
+  // Send 400 if incomplete
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: 'must contain name and number',
     });
   }
+  // Send 400 if alredy existing
   if (persons.some((p) => p.name === body.name)) {
     return response.status(400).json({
       error: 'name must be unique',
     });
   }
+  // Construct & add new person
   const person = {
     ...body,
     id: getMaxID(persons),
@@ -97,6 +107,7 @@ app.post('/api/persons', (request, response) => {
   response.status(201).json(person);
 });
 
+// Edit a person by id
 app.put('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
   const body = request.body;
@@ -109,10 +120,12 @@ app.put('/api/persons/:id', (request, response) => {
     persons = persons.filter((p) => p.id !== id).concat(updatedPerson);
     response.status(204).json(updatedPerson);
   } else {
+    // Send 404 if person does not exist
     return response.status(404).end();
   }
 });
 
+// Define port and listen for requests
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Listening on Port ${PORT}`);
