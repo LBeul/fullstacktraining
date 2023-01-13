@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "bcrypt": "^5.1.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^29.2.5"
-  }
-}
