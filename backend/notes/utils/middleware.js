@@ -13,15 +13,22 @@ const unknownEndpoint = (request, response) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message);
+  const sendError = (code, msg) => {
+    return response.status(code).json({ error: msg });
+  };
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' });
+    return sendError(400, 'malformatted id');
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message });
+    return sendError(400, error.message);
+  } else if (error.name === 'JsonWebTokenError') {
+    return sendError(401, 'invalid token');
+  } else if (error.name === 'TokenExpiredError') {
+    return sendError(401, 'token expired');
   }
 
   next(error);
+  logger.error(error.message);
 };
 
 module.exports = {
