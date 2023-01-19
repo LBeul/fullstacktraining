@@ -4,26 +4,29 @@ import User from '../models/user.js';
 
 const usersRouter = Router();
 
-usersRouter.post('/', async (request, response) => {
+usersRouter.post('/', async (request, response, next) => {
   const { username, name, password } = request.body;
 
   const existingUser = await User.findOne({ username });
   if (existingUser) {
     return response.status(400).json('username is already taken');
   }
-  if (password.length < 10) {
+  if (password.length < 3) {
     return response
       .status(400)
-      .json('password has to be 10 characters or longer');
+      .json('password has to be 3 characters or longer');
   }
 
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const user = new User({ username, name, passwordHash });
-  const savedUser = await user.save();
-
-  response.status(201).json(savedUser);
+  try {
+    const user = new User({ username, name, passwordHash });
+    const savedUser = await user.save();
+    response.status(201).json(savedUser);
+  } catch (error) {
+    next(error);
+  }
 });
 
 usersRouter.get('/', (request, response) => {

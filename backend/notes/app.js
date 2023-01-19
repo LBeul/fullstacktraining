@@ -3,7 +3,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('express-async-errors');
 
 const notesRouter = require('./controllers/notes');
 const usersRouter = require('./controllers/users');
