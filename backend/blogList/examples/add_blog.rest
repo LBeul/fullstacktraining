@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Julia Evans",
-  "author": "Julia Evans",
-  "url": "https://jvns.ca/",
+  "title": "Test3",
+  "author": "Test3",
+  "url": "https://test3.io/",
   "likes": 1
 }
