@@ -6,6 +6,7 @@ import 'dotenv/config';
 
 import blogsRouter from './controllers/blogs.js';
 import usersRouter from './controllers/users.js';
+import loginRouter from './controllers/login.js';
 import middleware from './utils/middleware.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(morgan('tiny'));
 // Invoke routers
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/login', loginRouter);
 
 app.use(middleware.errorHandler);
 
